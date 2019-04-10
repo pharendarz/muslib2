@@ -61,6 +61,7 @@ function getDirectoriesRecursive(srcpath) {
 
 exports.readDrive = () => {
     const srcpath = "/home/ouce/Desktop/muslibJS/testflac/";
+    // const srcpath = "/media/ouce/BlueOne/20 randomowych playlist/";
     const allPaths = getDirectoriesRecursive(srcpath);
     //console.log('read drive mister', allPaths);
     let fileList = []
@@ -73,5 +74,6 @@ exports.readDrive = () => {
         }
     });
     fileList = fileList.reduce((a, b) => a.concat(b), []);
-    console.log(fileList);
+    // console.log(fileList);
+    return fileList;
 }
