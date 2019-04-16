@@ -12,4 +12,5 @@ app.use(bodyParser.urlencoded({extended: true}));
 require('./routes/getRoutes')(app);
 
 app.listen(4000);
+console.clear();
 console.log(`====server is running====`);

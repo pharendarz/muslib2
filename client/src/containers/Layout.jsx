@@ -6,10 +6,10 @@ import Songs from '../tables/SongTable';
 
 class Layout extends Component {
     state = {
-        songs: ['sss'],
+        songs: [],
     }
-    handleGetSongs = async () => {
-        await axios.get('/readdrive').then(response => response.data).then(result => {
+    handleGetSongs = async (readTags) => {
+        await axios.post('/readdrive', {readTags: readTags}).then(response => response.data).then(result => {
             console.log(result);
             if(result){
                 this.setState({
@@ -21,7 +21,7 @@ class Layout extends Component {
 
     async componentWillMount(){
         console.log(this.state);
-        await this.handleGetSongs();
+        await this.handleGetSongs(false);
     }
     render() {
         return (
@@ -35,7 +35,7 @@ class Layout extends Component {
                             <p>=======================</p>
                             <p>=======================</p>
                             <div>
-                                <Songs songs={this.state.songs}/>
+                                <Songs songs={this.state.songs} />
                             </div>
                         </div>
                     }
