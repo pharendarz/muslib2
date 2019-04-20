@@ -1,8 +1,8 @@
 var fs = require("fs");
 var flac = require("flac-metadata");
 
-const filename = "/home/ouce/Desktop/muslibJS/testflac/mind.FLAC";
-const filenameTarget = "/home/ouce/Desktop/muslibJS/testflac/mind3.FLAC";
+const filename = "/home/ouce/Desktop/muslibJS/testflac/Gimmik.flac";
+const filenameTarget = "/home/ouce/Desktop/muslibJS/testflac/Gimmik-reflac.flac";
 var reader = fs.createReadStream(filename);
 var writer = fs.createWriteStream(filenameTarget);
 var processor = new flac.Processor();

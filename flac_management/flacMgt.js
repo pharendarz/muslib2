@@ -62,14 +62,14 @@ function getDirectoriesRecursive(srcpath) {
 exports.readDrive = () => {
     return new Promise((resolve, reject) => {
 
-        // const srcpath = "/home/ouce/Desktop/muslibJS/testflac/";
-        const srcpath = "/home/ouce/Desktop/music/";
+        const srcpath = "/home/ouce/Desktop/muslibJS/testflac/";
+        // const srcpath = "/home/ouce/Desktop/music/";
         // const srcpath = "/media/ouce/BlueOne/20 randomowych playlist/";
         const allPaths = getDirectoriesRecursive(srcpath);
-        //console.log('read drive mister', allPaths);
+        console.log('read drive mister', allPaths);
         let fileList = []
         allPaths.map(path => {
-            //console.log(path.toString());
+            console.log('PATH:', path);
             if (path !== undefined){
                 let filename = findSpecificFileFormat(path.toString(), '.flac');
                 //console.log(filename);
@@ -78,7 +78,7 @@ exports.readDrive = () => {
         });
         fileList = fileList.reduce((a, b) => a.concat(b), []);
         resolve(fileList);
-    })
+    }).catch(err => console.log(`READ_DRIVE_ERR`, err))
     // console.log(fileList);
 }
 

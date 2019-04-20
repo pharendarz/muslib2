@@ -37,6 +37,6 @@ module.exports = app => {
             //     console.log(song);
             // })
         }
-        res.send({songs: songs});
+        res.send({filePaths: songs});
     });
 }
