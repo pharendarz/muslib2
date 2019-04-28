@@ -61,17 +61,16 @@ exports.flacRead = async (filePath) => {
       const reader = fs.createReadStream(filename);
       let comments = [];
       let tagSectionCounter = 0;
-      console.log('===================probe=================');
       var processor = new flac.Processor({ parseMetaDataBlocks: true });
       processor.on("postprocess", function(mdb) {
         tagSectionCounter += 1;
         comments.push(mdb.comments);
-        console.log( 'ISTRUE LAST:', mdb.isLast , 'SECTION: ', tagSectionCounter, 'COMMENTS:', comments);
+        // console.log( 'ISTRUE LAST:', mdb.isLast , 'SECTION: ', tagSectionCounter, 'COMMENTS:', comments);
         if (mdb.isLast && comments.length !== 0) {
           resolve(flattenAndClean(comments));
         } else {
           const clean = cleanLists(comments);
-          console.log('CLEAN LIST:', clean);
+          // console.log('CLEAN LIST:', clean);
           if (!mdb.isLast && tagSectionCounter >= 3 && clean.length !== 0){;
               resolve(flattenAndClean(clean))
             }
@@ -79,22 +78,15 @@ exports.flacRead = async (filePath) => {
         }
       });
       reader.pipe(processor);
-      console.log('===================probe2==============');
     })
-
-    // console.log(ReadSingleFile);
-    // resolve();
-
+    
     Promise.all(ReadSingleFile).then(()=>{
       if (ReadSingleFile.length !== 0){
-        console.log('READ FILE = ', ReadSingleFile);
+        // console.log('READ FILE = ', ReadSingleFile);
 
       }
         resolve(ReadSingleFile);
     });
-    // }).catch(console.log('error'));
-
-    // await ReadSingleFile.then(resolve(comments => comments)).catch(err => console.log(err));
   })
   
 }

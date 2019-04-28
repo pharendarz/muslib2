@@ -1,43 +1,49 @@
 import React, {Component} from 'react';
 import {Route, BrowserRouter} from 'react-router-dom';
 import axios from 'axios';
-//<<redux
-import { selectSong } from '../../actions';
-import SongTable from '../tables/SongTable';
-//>>
-class Layout extends Component {
-    // state = {
-    //     songs: [],
-    // }
-    handleGetSongs = async (readTags) => {
-        // await axios.post('/readdrive', {readTags: readTags}).then(response => response.data).then(result => {
-        //     // console.log(result);
-        //     if(result){
-        //         // this.setState({
-        //         //     songs: result.songs,
-        //         // })
-        //     }
-        // })
-    }
 
-    async componentWillMount(){
-        console.log(this.state);
-        await this.handleGetSongs(false);
-    }
+
+//app components
+import DevTools from '../../dev/DevTools';
+import Navbar from '../navbars/Navbar';
+
+
+//app pages
+import {LibraryPage, PurgatoryPage, AlbumPage} from '../../pages/';
+
+class Layout extends Component {
     render() {
         return (
             <div>
                 <BrowserRouter>
-                
-                    <Route exact path="/" render={()=>
+                    <Navbar/>
+                    <DevTools/>
+                    <Route exact path="/purgatory" render={()=>
                         <div>
-                            <p>music lib java script</p>
-                            <p>=======================</p>
-                            <p>=======================</p>
-                            <p>=======================</p>
+                            <br/>
+                            <br/>
                             <div>
-                                {/* <SongTable songs={this.state.songs} /> */}
-                                <SongTable  />
+                                <PurgatoryPage />
+                            </div>
+                        </div>
+                    }
+                    />
+                    <Route exact path="/wholelibrary" render={()=>
+                        <div>
+                            <br/>
+                            <br/>
+                            <div>
+                                <LibraryPage />
+                            </div>
+                        </div>
+                    }
+                    />
+                    <Route exact path="/albums" render={()=>
+                        <div>
+                            <br/>
+                            <br/>
+                            <div>
+                                <AlbumPage />
                             </div>
                         </div>
                     }

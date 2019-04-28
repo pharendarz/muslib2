@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+//app
+const appPaths = require('../general_setup/appPaths');
 
 function flatten(lists) {
     // console.log('lists = ', i, lists)
@@ -59,15 +61,19 @@ function getDirectoriesRecursive(srcpath) {
     return [srcpath, ...flatten(recursive)];
 }
 
-exports.readDrive = () => {
+exports.readDrive = (startLocation) => {
     return new Promise((resolve, reject) => {
-
-        const srcpath = "/home/ouce/Desktop/muslibJS/testflac/";
+        
+        let srcpath = '';
+        if (startLocation)
+            srcpath = startLocation;
+        else
+            srcpath = appPaths.appPaths.purgatoryPath;
+        
         // const srcpath = "/home/ouce/Desktop/music/";
         // const srcpath = "/media/ouce/BlueOne/20 randomowych playlist/";
         const allPaths = getDirectoriesRecursive(srcpath);
-        console.log('read drive mister', allPaths);
-        let fileList = []
+        let fileList = [];
         allPaths.map(path => {
             console.log('PATH:', path);
             if (path !== undefined){

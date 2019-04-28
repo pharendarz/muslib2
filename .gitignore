@@ -3,3 +3,5 @@ dev.js
 .env
 *.FLAC
 *.MP3
+*.flac 
+*.mp3

@@ -1,35 +1,37 @@
-import axios from 'axios';
 import  { combineReducers} from 'redux';
 
-
-// const handleGetSongs = async (readTags) => {
-//     return await axios.post('/readdrive', {readTags: readTags}).then(response => response.data).then(result => {
-//         // console.log('NODE RESULT', result);
-//         if(result){
-//             return result.filePath
-//         } else
-//             return [];
-//     })
-// }
-
-const filePathsReducer = (fileList = [], action) => {
-    //static list of songs
-    // const fileList = await handleGetSongs(false);
-
+const purgatoryReducer = (fileList = [], action) => {
     
     switch(action.type){
-        case 'READ_DRIVE':
-            console.log(action.type, 'filePathsReducer', fileList);
-            // console.log('REDUCER READ DRIVE    ', action.payload )
+        case 'READ_DRIVE_PURGATORY':
             return action.payload;
-
-        case 'SONG_READ_FLAC':
-            return fileList;
+        case 'READ_FILE_FLAC_PURGATORY':
+            const song = action.payload;
+            return fileList.map(oldSong => oldSong.filePath === song.filePath ? song : oldSong)
         default:
-            console.log(action.type, 'filePathsReducer DEFAULT', fileList);
-            fileList = [
-                'no files read',
-            ]
+            return fileList;
+    }
+}
+const libraryReducer = (fileList = [], action) => {
+    
+    switch(action.type){
+        case 'READ_DRIVE_LIBRARY':
+            return action.payload;
+        case 'READ_FILE_FLAC_LIBRARY':
+            const song = action.payload;
+            return fileList.map(oldSong => oldSong.filePath === song.filePath ? song : oldSong)
+        default:
+            return fileList;
+    }
+}
+const mongoAlbumsReducer = (fileList = [], action) => {
+    
+    switch(action.type){
+        case 'READ_MONGO_ALBUMS':
+            return action.payload;
+        // case 'CREATE_MONGO_ALBUMS':
+        //     return action.payload;
+        default:
             return fileList;
     }
 }
@@ -38,13 +40,12 @@ const selectedSongReducer = (selectedSong = null, action) => {
     if (action.type === 'SONG_SELECTED'){
         return action.payload;
     }
-    if (action.type === 'SONG_READ_FLAC'){
-        return action.payload;
-    }
     return selectedSong;
 }
 
 export default combineReducers({
-    filePaths: filePathsReducer,
+    filePathsPurgatory: purgatoryReducer,
+    filePathsLibrary: libraryReducer,
+    mongoAlbums: mongoAlbumsReducer,
     selectedSong: selectedSongReducer,
 });
