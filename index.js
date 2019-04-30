@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 //db
 require('./mongoModels/Albums');
 mongoose.connect(keys.mongoURI, { useNewUrlParser: true });
+mongoose.set('useCreateIndex', true);
 
 const app = express();
 const appPort = 4000;

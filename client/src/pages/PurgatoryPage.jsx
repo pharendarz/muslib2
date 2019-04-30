@@ -1,10 +1,10 @@
 import React from 'react';
 //app componenets
-import PurgatoryTable from '../components/tables/PurgatoryTable';
+import Jabba from '../components/tables/JabbaTable';
 
 const PurgatoryPage = () => {
     return(
-        <PurgatoryTable/>
+        <Jabba pageType='purgatory'/>
     )
 }
 

@@ -1,10 +1,10 @@
 import React from 'react';
 //app componenets
-import LibraryTable from '../components/tables/LibraryTable';
+import JabbaTable from '../components/tables/JabbaTable';
 
 const LibraryPage = () => {
     return(
-        <LibraryTable/>
+        <JabbaTable pageType='library'/>
     )
 }
 

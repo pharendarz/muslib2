@@ -1,7 +1,9 @@
 import axios from 'axios';
 //app functions
 import {createAlbums} from '../commonFunctions/dev';
+
 export const readDrivePurgatory = (filePaths) => {
+    // console.log('ACTION READ DRIVE PURG', filePaths);
     return {
         type: 'READ_DRIVE_PURGATORY',
         payload: filePaths
@@ -20,17 +22,18 @@ export const readMongoAlbums = (albums) => {
         payload: albums
     }
 }
-export const createMongoAlbumsFromPurgatory = (albums) => {
+export const createMongoAlbumsFromPurgatory = (albums) => async (dispatch, getState) => {
     console.log(`createMongoAlbumsFromPurgatory ACTION`, albums);
-    createAlbums(albums);
+    await createAlbums(albums);
     
-    return {
+    dispatch({
         type: 'CREATE_MONGO_ALBUMS',
         payload: albums
-    }
+    })
 }
-export const readAllSongsWithFlacType = (view) => (dispatch, getState) => {
-    if (!view) return;
+export const readSongsWithFlacType = (view, singlePath) => (dispatch, getState) => {
+    if (!view) 
+        return;
     let filePaths = [];
     switch(view){
         case 'PURGATORY':
@@ -47,62 +50,79 @@ export const readAllSongsWithFlacType = (view) => (dispatch, getState) => {
     }
     
     console.log('FILEPATHS:', filePaths);
-    filePaths.forEach(obj => {
-
-        const response = axios({method: 'post', url: '/readflac', timeout: 5000, data: {filePath: obj.filePath}})
-            .then(response => response.data)
-            .catch(err => {
-                console.log('ERRRRRRRRRORRRRRR', err.message);
-            })            
-            .then(result => {
-                // console.log('result', result);
-                if(result){
-                    let songObj = {
-                        filePath: obj.filePath,
-                        rating: null,
-                        album: null,
-                        artist: null,
-                        title: null,
-                        indexAlbum: null,
-                        indexTrack: null,
-                    };
-                    for (let i=0; i<result.metadata.length; i++){
-                        const key = Object.keys(result.metadata[i])[0];
-                        const value = result.metadata[i][key];
-                        // console.log(key, value);
-                        switch(key.toLowerCase()){
-                            case 'rating': {
-                                songObj.rating = value;
-                                break;
-                            }
-                            case 'indexalbum': {
-                                songObj.indexAlbum = value;
-                                break;
-                            }
-                            case 'indextrack': {
-                                songObj.indexTrack = value;
-                                break;
-                            }
-                            case 'artist': {
-                                songObj.artist = value;
-                                break;
-                            }
-                            case 'title': {
-                                songObj.title = value;
-                                break;
-                            }
-                            default:
-                                break;
-                        }
-                    }
-                    //call action creator
-                    dispatch(readSongFlacType(songObj, view));
-                }
-            });
+    filePaths.forEach(async album => {
+        // console.log('ALBUM ACTION:::', album);
+        if(singlePath){
+            console.log('return from single path', singlePath);
+            const songObj = await readFlacFromServer(singlePath);
+            dispatch(readSongFlacType(songObj, view));
+            return;
+        } else {
+            album.forEach(async file => {
+                const songObj = await readFlacFromServer(file.filePath);
+                dispatch(readSongFlacType(songObj, view));
+            })
+        }
     })
 
 }
-
+const readFlacFromServer = (filePath) => {
+    return new Promise((resolve, reject)=> {
+        axios({
+            method: 'post', 
+            url: '/readflac', 
+            timeout: 5000, 
+            data: {filePath: filePath}})
+        .then(response => response.data)
+        .catch(err => {
+            console.log('ERROR READ ALL SONGS FLAC', err.message);
+        })            
+        .then(result => {
+            // console.log('FILE ACTION:::', file);
+            // console.log('result', result);
+            if(result){
+                let songObj = {
+                    filePath: filePath,
+                };
+                for (let i=0; i<result.metadata.length; i++){
+                    const key = Object.keys(result.metadata[i])[0];
+                    const value = result.metadata[i][key];
+                    // console.log('KEY VALUE:::', key.toLowerCase(), value);
+                    switch(key.toLowerCase()){
+                        case 'rating': {
+                            songObj.rating = value;
+                            break;
+                        }
+                        case 'indexalbum': {
+                            songObj.indexAlbum = value;
+                            break;
+                        }
+                        case 'indextrack': {
+                            songObj.indexTrack = value;
+                            break;
+                        }
+                        case 'artist': {
+                            songObj.artist = value;
+                            break;
+                        }
+                        case 'title': {
+                            songObj.title = value;
+                            break;
+                        }
+                        case 'album': {
+                            songObj.albumFolder = value;
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                }
+                //call action creator
+                resolve(songObj);
+            }
+        })
+    })
+}
 export const readSongFlacType = (song, view) => (dispatch, getState) => {
     switch(view){
         case 'LIBRARY':

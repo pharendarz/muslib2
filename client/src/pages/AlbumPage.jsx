@@ -1,11 +1,11 @@
 import React from 'react';
 //app componenets
-import AlbumTable from '../components/tables/AlbumTable';
-
-const LibraryPage = () => {
+// import AlbumTable from '../components/tables/AlbumTable';
+import JabbaTable from '../components/tables/JabbaTable';
+const AlbumsPage = () => {
     return(
-        <AlbumTable/>
+        <JabbaTable pageType="albums"/>
     )
 }
 
-export default AlbumTable;
+export default AlbumsPage;

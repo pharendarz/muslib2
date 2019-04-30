@@ -4,10 +4,8 @@ const path = require('path');
 const appPaths = require('../general_setup/appPaths');
 
 function flatten(lists) {
-    // console.log('lists = ', i, lists)
     return lists.reduce((a, b) => a.concat(b), []);
 }
-//let i = 0;  
 function getDirectories(srcpath) {
     const readdir = fs.readdirSync(srcpath);
     //console.log(readdir);
@@ -16,9 +14,6 @@ function getDirectories(srcpath) {
     const filteredArray = pathArray.filter(path => fs.statSync(path).isDirectory());
     //console.log(filteredArray);
     return filteredArray;
-    // return fs.readdirSync(srcpath)
-    //     .map(file => {return path.join(srcpath, file)})
-    //     .filter(path => fs.statSync(path).isDirectory());
 }
 function findSpecificFileFormat(startPath, filter){
     if (!fs.existsSync(startPath)){
@@ -45,6 +40,7 @@ function findSpecificFileFormat(startPath, filter){
             }
         }
     }
+    // console.log('pathsWithFilter', pathsWithFilter)
     if (pathsWithFilter.length === 0) 
         return null;
     else
@@ -70,19 +66,25 @@ exports.readDrive = (startLocation) => {
         else
             srcpath = appPaths.appPaths.purgatoryPath;
         
-        // const srcpath = "/home/ouce/Desktop/music/";
-        // const srcpath = "/media/ouce/BlueOne/20 randomowych playlist/";
         const allPaths = getDirectoriesRecursive(srcpath);
         let fileList = [];
-        allPaths.map(path => {
-            console.log('PATH:', path);
-            if (path !== undefined){
-                let filename = findSpecificFileFormat(path.toString(), '.flac');
-                //console.log(filename);
-                if(filename !== null) fileList.push(filename);
+        allPaths.map(filePath => {
+            // console.log('PATH:', path);
+            if (filePath !== undefined){
+                let pathsArray = findSpecificFileFormat(filePath.toString(), '.flac');
+                // console.log('PATHSARRAY::::', pathsArray);
+                const parentDirName = path.dirname(pathsArray[0]).split(path.sep).pop();
+                console.log(parentDirName);
+                const obj = {
+                    filePaths: pathsArray,
+                    albumFolder: parentDirName,
+                }
+                // console.log('FILE MGT_readDrive newObject', obj);
+                if(pathsArray !== null) fileList.push(obj);
             }
         });
         fileList = fileList.reduce((a, b) => a.concat(b), []);
+        // console.log('FILELIST: ', fileList);
         resolve(fileList);
     }).catch(err => console.log(`READ_DRIVE_ERR`, err))
     // console.log(fileList);

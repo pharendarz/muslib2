@@ -48,9 +48,6 @@ function flattenAndClean(lists) {
   // console.log('filtered', filtered);
 
 }
-const metadataFromFlacToArray = () => {
-
-}
 exports.flacRead = async (filePath) => {
   
   return new Promise(async (resolve, reject) => {

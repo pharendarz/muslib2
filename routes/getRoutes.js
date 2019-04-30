@@ -4,12 +4,15 @@ const flacMgt = require('../flac_management/flacMgt.js');
 const flacRead = require('../flac_management/flacRead.js');
 const flacWrite = require('../flac_management/flacWrite.js');
 const appPaths = require('../general_setup/appPaths');
+
 //db
 const albums = require('../mongoModels/Albums');
+const globalSetup = require('../mongoModels/GlobalSetup');
+
 module.exports = app => {
     app.post('/readflac', async (req, res) => {
         const metadata = await flacRead.flacRead(req.body.filePath);
-        console.log('metadata:', metadata);
+        // console.log('metadata:', metadata);
         res.send({metadata: metadata});
     });
     app.post('/writeflac', async (req, res) => {
@@ -24,28 +27,49 @@ module.exports = app => {
           });
         console.log('after read');
         //const readFlacs = (req.body.readTags.toString() === 'true');
-        res.send({filePaths: songs});
+        res.send({readFiles: songs});
     });
     app.get('/getpaths', (req, res) => {
         res.send({appPaths: appPaths.appPaths})
     });
     //DATABASE
+    //single usage
+    app.get('/api/globalSetup/createSetup', (req, res) => {
+        let counter = 0;
+        globalSetup.createSetup();
+        res.send({ server: 'creating setup' });
+    });
+    //multiple usage
+    //global setup
+    app.get('/api/globalSetup/updateLastNumberIndexAlbum', async (req, res) => {
+        let GlobalSetup = await mongoose
+            .model('globals')
+            .find({setupId: 1})
+            .select({ setupId: false });
+
+        const nextNumberIndexAlbum = GlobalSetup[0].lastNumberIndexAlbum  + 1;
+        await globalSetup.updateLastNumberIndexAlbum('5cc6b8023bdd5724d37f07e8', nextNumberIndexAlbum);
+
+        GlobalSetup = await mongoose
+            .model('globals')
+            .find({setupId: 1})
+            .select({ setupId: false });
+        const lastNumberIndexAlbum = GlobalSetup[0].lastNumberIndexAlbum;
+        res.send({lastNumberIndexAlbum: lastNumberIndexAlbum});
+    })
+    //albums
     app.post('/api/albums/create', async (req, res) => {
         // Tags.findOne({ name: req.body.name }).then(existingId => {
             // if (existingId) {
             //     // albums.update(Tags, existingId.id, req.body);
-            // } else {      
-            const item = {
-                indexAlbum: req.body.indexAlbum,
-                title: req.body.title,
-                artist: req.body.artist,
-                filePath: req.body.filePath,
-            }          
+            // } else {
+                const item = req.body.data;      
                 await albums.create(item);
-                // res.send({createTag: "ok"});
+                res.send({createdAlbum: item});
             // }        
         // })
     });
+
     app.get('/api/albums/all', async (req, res) => {
         const Albums = await mongoose
             .model('albums')

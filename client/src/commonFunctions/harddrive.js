@@ -10,12 +10,13 @@
                 await axios.post('/readdrive', {startLocation: startLocation}).then(response => response.data).then(result => {
                     // console.log(result);
                     if(result){
-                        resolve(result.filePaths);
+                        resolve(result.readFiles);
                     }
                 })
             });
     
             Promise.all(ReadDrive).then(() => {
+                // console.log('HDD RESULT:::', ReadDrive)
                 // console.log('ReadDrive=========', ReadDrive);
                 resolve(ReadDrive);
             })

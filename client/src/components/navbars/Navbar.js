@@ -7,17 +7,17 @@ class NavbarMusicLibrary extends React.Component {
         return(
 
         <Navbar bg="dark" variant="dark">
-            <Navbar.Brand href="#home">jabba.rar</Navbar.Brand>
+            <Navbar.Brand >jabba.rar</Navbar.Brand>
             <Nav className="mr-auto">
-                <Nav.Link href="#home">Home</Nav.Link>
-                <Nav.Link href="#pricing">Settings</Nav.Link>
+                <Nav.Link >Home</Nav.Link>
+                <Nav.Link >Settings</Nav.Link>
                 <NavDropdown title="Your Library" id="collasible-nav-dropdown">
                     <NavDropdown.Item >
                         <Link to="/albums">
                             Albums / Releases / Ep's
                         </Link>
                     </NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.2">Artists</NavDropdown.Item>
+                    <NavDropdown.Item >Artists</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item >
                         <Link to="/wholelibrary">
