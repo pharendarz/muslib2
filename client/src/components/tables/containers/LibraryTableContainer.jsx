@@ -9,11 +9,13 @@ export const LibraryTable = (props) => {
             <tr>
                 <th>#</th>
                 <th>Song path</th>
+                <th>Album folder</th>
                 <th>Album</th>
                 <th>Artist</th>
                 <th>Title</th>
                 <th>rating</th>
                 <th>genre</th>
+                <th>add mongo</th>
                 <th>mongo sync</th>
                 <th>read flac</th>
                 <th>write tags</th>

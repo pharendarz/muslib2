@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import {Route, BrowserRouter} from 'react-router-dom';
-import axios from 'axios';
-
 
 //app components
 import DevTools from '../../dev/DevTools';
@@ -9,7 +7,7 @@ import Navbar from '../navbars/Navbar';
 
 
 //app pages
-import {LibraryPage, PurgatoryPage, AlbumPage} from '../../pages/';
+import {LibraryPage, DumpPage, PurgatoryPage, AlbumPage} from '../../pages/';
 
 class Layout extends Component {
     render() {
@@ -18,6 +16,16 @@ class Layout extends Component {
                 <BrowserRouter>
                     <Navbar/>
                     <DevTools/>
+                    <Route exact path="/dump" render={()=>
+                        <div>
+                            <br/>
+                            <br/>
+                            <div>
+                                <DumpPage />
+                            </div>
+                        </div>
+                    }
+                    />
                     <Route exact path="/purgatory" render={()=>
                         <div>
                             <br/>
@@ -38,7 +46,7 @@ class Layout extends Component {
                         </div>
                     }
                     />
-                    <Route exact path="/albums" render={()=>
+                    <Route exact path="/mongoalbums" render={()=>
                         <div>
                             <br/>
                             <br/>

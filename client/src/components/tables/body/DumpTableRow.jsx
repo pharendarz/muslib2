@@ -1,11 +1,14 @@
 import React from 'react';
+import ReadFlacButton from '../../buttons/ReadFlac';
 import axios from 'axios';
 import {Button,} from 'react-bootstrap';
 //redux 
 import {connect} from 'react-redux';
 import {readSongFlacType, readSongsWithFlacType} from '../../../actions';
+//app functions
 import {testUndefined} from '../../../commonFunctions/helpers';
-
+// app setup
+import {getAppPaths} from '../../../commonFunctions/application';
 class SongTableBody extends React.Component {
     constructor(props){
         super(props);
@@ -17,32 +20,47 @@ class SongTableBody extends React.Component {
         axios({method: 'post', url: '/writeflac', timeout: 5000, data: {filePath: filePath}});
     }
     handleReadFlac = async (filePath) => {
-        this.props.readSongsWithFlacType('LIBRARY', filePath);
+        this.props.readSongsWithFlacType('DUMP', filePath);
     }
-    handleAddAlbumToMongo = (album) => {
-
+    handleProceedAlbum = async (dumpAlbumPath, folderName) => {
+        const appPaths = await getAppPaths();
+        console.log('FOLDER NAME:::', folderName);
+        const purgAlbumPath = appPaths.purgatoryPath + folderName;
+        //determine name of album folder
+        //by default Band + "_" + AlbumName without special signs
+        
+        //move all files with defined circumstances to purgatory folder
+        // console.log('dumpAlbumPath', dumpAlbumPath);
+        // console.log('purgAlbumPath', purgAlbumPath);
+        axios({method: 'post', url: '/api/purgatory/create', timeout: 5000, data: {
+            dumpAlbumPath: dumpAlbumPath,
+            purgAlbumPath: purgAlbumPath
+        }});
     }
     render(){
+        let filepath = '';
+        let purgatoryPath = '';
+        let albumFolder = '';
+
         let indexAlbum = null;
         let indexTrack = null;
+
         let artist = null;
         let title = null;
         let rating = null;
-        let filepath = '';
-        let albumFolder = '';
         let album = '';
 
-        const albumObject = this.props.filePathsLibrary[this.props.indexAlbum];
+        const albumObject = this.props.filePathsState[this.props.indexAlbum];
 
         if (testUndefined(albumObject)){
             
-            const fileObject = this.props.filePathsLibrary[this.props.indexAlbum][this.props.indexFile];
+            const fileObject = this.props.filePathsState[this.props.indexAlbum][this.props.indexFile];
             // console.log('RENDER OBJECT:::' ,fileObject);
             filepath = fileObject.filePath;
             if(testUndefined(fileObject.indexAlbum, 'indexAlbum'))
                 indexAlbum = fileObject.indexAlbum;
                 
-            if(testUndefined(fileObject.indexTrack, 'indexTrack'))
+            if(testUndefined(fileObject.indexTrack , 'indexTrack'))
                 indexTrack = fileObject.indexTrack;
 
             if(testUndefined(fileObject.artist, 'artist'))
@@ -50,10 +68,8 @@ class SongTableBody extends React.Component {
 
             if(testUndefined(fileObject.rating, 'rating'))
                 rating = fileObject.rating;
-                
             if(testUndefined(fileObject.albumFolder, 'albumFolder'))
                 albumFolder = fileObject.albumFolder;
-
             if(testUndefined(fileObject.album, 'album'))
                 album = fileObject.album;
         }
@@ -62,17 +78,19 @@ class SongTableBody extends React.Component {
             <tbody>
             <tr>
                 <td>{this.props.indexAlbum}</td>
-                <td>{filepath}</td>
+                <td>{filepath.substring(0,10)}...</td>
+                <td>{purgatoryPath.substring(0,10)}...</td>
                 <td>{albumFolder}</td>
                 <td>{album}</td>
+                <td>{indexAlbum}</td>
+                <td>{indexTrack}</td>
                 <td>{artist}</td>
                 <td>{title}</td>
                 <td>{rating}</td>
-                <td>IDM</td>
-                <td><Button onClick={() => {}} style={{background: 'lightblue', border: '1px solid #000'}}>Add mongo</Button></td>
-                <td>link AlbumId</td>
+                <td><Button onClick={() => this.handleProceedAlbum(this.props.song.filePath, albumFolder)} style={{background: 'lightgreen', border: '1px solid #000'}}>Proceed</Button></td>
                 <td><Button onClick={() => this.handleReadFlac(this.props.song.filePath)}>Read Flac</Button></td>
                 <td><Button onClick={() => this.handleWriteFlac(this.props.song.filePath)} style={{background: 'tomato', border: '1px solid #000'}}>Write Tags</Button></td>
+                <td>fileloc</td>
             </tr>
             </tbody>
         )
@@ -80,13 +98,13 @@ class SongTableBody extends React.Component {
 }
 
 //<<REDUX
-const mapStateToProps = (state) => { 
+const mapStateToProps = (state) => { // << GET MY STATE
     return {
-        filePathsLibrary: state.filePathsLibrary,
-    }; 
+        filePathsState: state.filePathsDump,
+    }; // MUSI ZWRACAC OBIEKT
 }
 
 export default connect(mapStateToProps, 
-    {readSongFlacType, readSongsWithFlacType} 
-    )(SongTableBody);
+    {readSongFlacType, readSongsWithFlacType} // << drugi argument zawiera ACTION CREATORY ES6 << {readSongFlacType: readSongFlacType} = {readSongFlacType}
+)(SongTableBody);
 //>>

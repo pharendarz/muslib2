@@ -11,6 +11,27 @@ class NavbarMusicLibrary extends React.Component {
             <Nav className="mr-auto">
                 <Nav.Link >Home</Nav.Link>
                 <Nav.Link >Settings</Nav.Link>
+                <Nav.Link >Settings</Nav.Link>
+                <Nav.Link >
+                    <Link to="/dump">
+                        Dump
+                    </Link>
+                </Nav.Link>
+                <Nav.Link >
+                    <Link to="/purgatory">
+                        Purgatory
+                    </Link>
+                </Nav.Link>
+                <Nav.Link >
+                    <Link to="/wholelibrary">
+                    Whole library
+                    </Link>
+                </Nav.Link>
+                <Nav.Link >
+                    <Link to="/mongoalbums">
+                    Mongo
+                    </Link>
+                </Nav.Link>
                 <NavDropdown title="Your Library" id="collasible-nav-dropdown">
                     <NavDropdown.Item >
                         <Link to="/albums">
@@ -28,6 +49,11 @@ class NavbarMusicLibrary extends React.Component {
                     <NavDropdown.Item>
                         <Link to="/purgatory">
                             Purgatory
+                        </Link>
+                    </NavDropdown.Item>
+                    <NavDropdown.Item>
+                        <Link to="/dj">
+                            DJ / Prod
                         </Link>
                     </NavDropdown.Item>
                     

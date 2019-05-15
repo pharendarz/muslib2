@@ -1,8 +1,8 @@
 import React from 'react';
 import {Table} from 'react-bootstrap'
-import PurgatoryTableRow from '../body/PurgatoryTableRow';
+import DumpTableRow from '../body/DumpTableRow';
 
-export const PurgatoryTable = (props) => {
+export const DumpTable = (props) => {
     return (
         <Table>
         <thead>
@@ -17,6 +17,8 @@ export const PurgatoryTable = (props) => {
                 <th>Artist</th>
                 <th>Title</th>
                 <th>rating</th>
+                <th>Library</th>
+                <th>read flac</th>
                 <th>write tags</th>
                 <th>open file loc</th>
             </tr>
@@ -25,7 +27,7 @@ export const PurgatoryTable = (props) => {
         props.readAlbums.map((albumFiles, indexAlbum) => {
             // console.log(albumFiles);
             return (albumFiles.map((file, indexFile) => {
-                return (<PurgatoryTableRow 
+                return (<DumpTableRow 
                     key={indexFile} 
                     indexAlbum={indexAlbum} 
                     indexFile={indexFile} 
@@ -34,7 +36,7 @@ export const PurgatoryTable = (props) => {
             }))
             // return (<TableRow key={index} index={index} song={song}/>)
         }) :
-            <PurgatoryTableRow key={'nosongkey-1'} index={0} song={[{filePath: 'no song'}]}/>
+            <DumpTableRow key={'nosongkey-1'} index={0} song={[{filePath: 'no song'}]}/>
         }
         </Table>
     )

@@ -7,19 +7,19 @@ import {removeDuplicatesByProperty} from '../../commonFunctions/helpers';
 
 const _handleReadDrive = async (props) => {
     const appPaths = await getAppPaths();
-    const arrayOfPaths = await readDriveHDD(appPaths.purgatoryPath);
+    const arrayOfPaths = await readDriveHDD(appPaths.dumpPath);
     // console.log('ARRAY OF PATHS::::', arrayOfPaths);
     const modPaths = arrayOfPaths.map(path => {
         return (path.filePaths.map(fileObj => {
             
             return {
-                    filePath: fileObj,
-                    albumFolder: path.albumFolder
+                filePath: fileObj,
+                albumFolder: path.albumFolder
             }
         }))
     });
     console.log('MOD PATHS::::', modPaths);
-    props.readDrivePurgatory(modPaths);
+    props.readDriveDump(modPaths);
 }
 
 const _handleCreateMongoByAlbum = async (props, property) => {
@@ -42,40 +42,40 @@ const _handleCreateMongoByAlbum = async (props, property) => {
     props.createMongoAlbumsFromPurgatory(uniqueAlbums);
 }
 
-const PurgatoryButtons = (props) => {
+const DumpButtons = (props) => {
     return (
         <div>
             <Button 
-                key="purgButton_1"
+                key="dumpButton_1"
                 style={{background: 'red', border: '1px solid #000'}} 
-                onClick={()=>{props.readSongsWithFlacType('PURGATORY')}}
+                onClick={()=>{props.readSongsWithFlacType('DUMP')}}
             >
                 Read all FLAC's
             </Button>
             <Button 
-                key="purgButton_2"
+                key="dumpButton_2"
                 variant="dark" 
                 onClick={() => {}}
             >
                 Add AlbumId
             </Button>
             <Button 
-                key="purgButton_3"
+                key="dumpButton_3"
                 style={{background: 'green', border: '1px solid #000'}} 
                 onClick={() => _handleReadDrive(props)}
             >
                 Read drive
             </Button>
-            <Button 
-                key="purgButton_4"
+            {/* <Button 
+                key="dumpButton_4"
                 variant="dark" 
                 onClick={() => _handleCreateMongoByAlbum(props, 'albumFolder')}
             >
                 Update Mongo
-            </Button>
+            </Button> */}
 
         </div>
     )
 }
 
-export default PurgatoryButtons;
+export default DumpButtons;

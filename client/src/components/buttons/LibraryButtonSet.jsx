@@ -12,8 +12,8 @@ const _handleReadDrive = async (props) => {
         return (path.filePaths.map(fileObj => {
             
             return {
-                    filePath: fileObj,
-                    albumFolder: path.albumFolder
+                filePath: fileObj,
+                albumFolder: path.albumFolder
             }
         }))
     });

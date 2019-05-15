@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 //app
 const flacMgt = require('../flac_management/flacMgt.js');
+const driveMgt = require('../drive_management/driveMgt');
 const flacRead = require('../flac_management/flacRead.js');
 const flacWrite = require('../flac_management/flacWrite.js');
 const appPaths = require('../general_setup/appPaths');
@@ -68,6 +69,15 @@ module.exports = app => {
                 res.send({createdAlbum: item});
             // }        
         // })
+    });
+    //purgatory 
+    app.post('/api/purgatory/create', async (req, res) => {
+        const paths = req.body;      
+        console.log('req.body.data:::', req.body);
+        await driveMgt.createFolderWithFiles(
+            paths.dumpAlbumPath, paths.purgAlbumPath
+        );
+        res.send({purgatoryPath: purgatoryPath});
     });
 
     app.get('/api/albums/all', async (req, res) => {

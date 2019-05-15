@@ -1,7 +1,14 @@
 import axios from 'axios';
 //app functions
 import {createAlbums} from '../commonFunctions/dev';
-
+import {readFlacFromHDD} from '../commonFunctions/harddrive';
+export const readDriveDump = (filePaths) => {
+    // console.log('ACTION READ DRIVE PURG', filePaths);
+    return {
+        type: 'READ_DRIVE_DUMP',
+        payload: filePaths
+    }
+}
 export const readDrivePurgatory = (filePaths) => {
     // console.log('ACTION READ DRIVE PURG', filePaths);
     return {
@@ -36,6 +43,9 @@ export const readSongsWithFlacType = (view, singlePath) => (dispatch, getState) 
         return;
     let filePaths = [];
     switch(view){
+        case 'DUMP':
+            filePaths = getState().filePathsDump;
+            break;
         case 'PURGATORY':
             filePaths = getState().filePathsPurgatory;
             break;
@@ -54,82 +64,29 @@ export const readSongsWithFlacType = (view, singlePath) => (dispatch, getState) 
         // console.log('ALBUM ACTION:::', album);
         if(singlePath){
             console.log('return from single path', singlePath);
-            const songObj = await readFlacFromServer(singlePath);
+            const songObj = await readFlacFromHDD(singlePath);
             dispatch(readSongFlacType(songObj, view));
             return;
         } else {
             album.forEach(async file => {
-                const songObj = await readFlacFromServer(file.filePath);
+                const songObj = await readFlacFromHDD(file.filePath);
                 dispatch(readSongFlacType(songObj, view));
             })
         }
     })
 
 }
-const readFlacFromServer = (filePath) => {
-    return new Promise((resolve, reject)=> {
-        axios({
-            method: 'post', 
-            url: '/readflac', 
-            timeout: 5000, 
-            data: {filePath: filePath}})
-        .then(response => response.data)
-        .catch(err => {
-            console.log('ERROR READ ALL SONGS FLAC', err.message);
-        })            
-        .then(result => {
-            // console.log('FILE ACTION:::', file);
-            // console.log('result', result);
-            if(result){
-                let songObj = {
-                    filePath: filePath,
-                };
-                for (let i=0; i<result.metadata.length; i++){
-                    const key = Object.keys(result.metadata[i])[0];
-                    const value = result.metadata[i][key];
-                    // console.log('KEY VALUE:::', key.toLowerCase(), value);
-                    switch(key.toLowerCase()){
-                        case 'rating': {
-                            songObj.rating = value;
-                            break;
-                        }
-                        case 'indexalbum': {
-                            songObj.indexAlbum = value;
-                            break;
-                        }
-                        case 'indextrack': {
-                            songObj.indexTrack = value;
-                            break;
-                        }
-                        case 'artist': {
-                            songObj.artist = value;
-                            break;
-                        }
-                        case 'title': {
-                            songObj.title = value;
-                            break;
-                        }
-                        case 'album': {
-                            songObj.albumFolder = value;
-                            break;
-                        }
-                        default:
-                            break;
-                    }
-                }
-                //call action creator
-                resolve(songObj);
-            }
-        })
-    })
-}
+
 export const readSongFlacType = (song, view) => (dispatch, getState) => {
     switch(view){
-        case 'LIBRARY':
-            dispatch({type: 'READ_FILE_FLAC_LIBRARY', payload: song})
+        case 'DUMP':
+            dispatch({type: 'READ_FILE_FLAC_DUMP', payload: song})
             break;
         case 'PURGATORY':
             dispatch({type: 'READ_FILE_FLAC_PURGATORY', payload: song})
+            break;
+        case 'LIBRARY':
+            dispatch({type: 'READ_FILE_FLAC_LIBRARY', payload: song})
             break;
         case 'ALBUMS':
             dispatch({type: 'READ_FILE_FLAC_ALBUMS', payload: song})

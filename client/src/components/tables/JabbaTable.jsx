@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 //redux
 import { connect } from 'react-redux';
 import { 
+    readDriveDump,
     readDrivePurgatory, 
     readSongsWithFlacType, 
     readDriveLibrary, 
@@ -9,9 +10,11 @@ import {
     readMongoAlbums
 } from '../../actions';
 //app client
-import PurgatoryButtons from '../buttons/PurgatoryButtonsSet';
+import DumpButtons from '../buttons/DumpButtonsSet';
+import PurgatoryButtons from '../buttons/PurgatoryButtons';
 import LibraryButtons from '../buttons/LibraryButtonSet';
 import AlbumsButtons from '../buttons/AlbumsButtonSet';
+import {DumpTable} from './containers/DumpTableContainer';
 import {PurgatoryTable} from './containers/PurgatoryTableContainer';
 import {LibraryTable} from './containers/LibraryTableContainer';
 import {AlbumsTable} from './containers/AlbumsTableContainer';
@@ -19,6 +22,19 @@ class JabbaTable extends Component {
     
     render() {
         switch(this.props.pageType){
+            case 'dump':
+                return (
+                    <div>
+                        <DumpButtons 
+                            readSongsWithFlacType={this.props.readSongsWithFlacType}
+                            readDriveDump={this.props.readDriveDump}
+                            readAlbums={this.props.readAlbumsDump}
+                            // createMongoAlbumsFromPurgatory={this.props.createMongoAlbumsFromPurgatory}
+                        />
+                        <DumpTable readAlbums={this.props.readAlbumsDump}/>
+                        
+                    </div>
+                )
             case 'purgatory':
                 return (
                     <div>
@@ -64,6 +80,7 @@ class JabbaTable extends Component {
 //<<REDUX
 const mapStateToProps = (state) => { // << GET MY STATE
     return {
+        readAlbumsDump: state.filePathsDump,
         readAlbumsPurgatory: state.filePathsPurgatory,
         readAlbumsLibrary: state.filePathsLibrary,
         readAlbumsMongo: state.mongoAlbums
@@ -73,6 +90,7 @@ const mapStateToProps = (state) => { // << GET MY STATE
 
 export default connect(mapStateToProps, 
     {
+        readDriveDump, 
         readDrivePurgatory, 
         readSongsWithFlacType, 
         readDriveLibrary, 

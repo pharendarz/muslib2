@@ -1,5 +1,4 @@
 import React from 'react';
-import ReadFlacButton from '../../buttons/ReadFlac';
 import axios from 'axios';
 import {Button,} from 'react-bootstrap';
 //redux 
@@ -7,30 +6,27 @@ import {connect} from 'react-redux';
 import {readSongFlacType, readSongsWithFlacType} from '../../../actions';
 //app functions
 import {testUndefined} from '../../../commonFunctions/helpers';
-
+// app setup
+import {getAppPaths} from '../../../commonFunctions/application';
 class SongTableBody extends React.Component {
-    constructor(props){
-        super(props);
-
-        this.handleReadFlac = this.handleReadFlac.bind(this);
-        this.handleWriteFlac = this.handleWriteFlac.bind(this);
-    }
-    handleWriteFlac = (filePath) => {
-        axios({method: 'post', url: '/writeflac', timeout: 5000, data: {filePath: filePath}});
-    }
     handleReadFlac = async (filePath) => {
         this.props.readSongsWithFlacType('PURGATORY', filePath);
     }
-
     render(){
+        let filepath = '';
+        let purgatoryPath = '';
+        let albumFolder = '';
+
         let indexAlbum = null;
         let indexTrack = null;
+
         let artist = null;
         let title = null;
         let rating = null;
-        let filepath = '';
-        let albumFolder = '';
+        let album = '';
+
         const albumObject = this.props.filePathsState[this.props.indexAlbum];
+
         if (testUndefined(albumObject)){
             
             const fileObject = this.props.filePathsState[this.props.indexAlbum][this.props.indexFile];
@@ -49,22 +45,25 @@ class SongTableBody extends React.Component {
                 rating = fileObject.rating;
             if(testUndefined(fileObject.albumFolder, 'albumFolder'))
                 albumFolder = fileObject.albumFolder;
+            if(testUndefined(fileObject.album, 'album'))
+                album = fileObject.album;
         }
 
         return (
             <tbody>
             <tr>
                 <td>{this.props.indexAlbum}</td>
-                <td>{filepath}</td>
+                <td>{filepath.substring(0,10)}...</td>
+                <td>{purgatoryPath.substring(0,10)}...</td>
                 <td>{albumFolder}</td>
+                <td>{album}</td>
                 <td>{indexAlbum}</td>
                 <td>{indexTrack}</td>
                 <td>{artist}</td>
                 <td>{title}</td>
                 <td>{rating}</td>
-                <td>true/false</td>
-                <td><Button onClick={() => this.handleReadFlac(this.props.song.filePath)}>Read Flac</Button></td>
                 <td><Button onClick={() => this.handleWriteFlac(this.props.song.filePath)} style={{background: 'tomato', border: '1px solid #000'}}>Write Tags</Button></td>
+                <td>fileloc</td>
             </tr>
             </tbody>
         )

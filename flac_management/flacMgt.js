@@ -64,7 +64,7 @@ exports.readDrive = (startLocation) => {
         if (startLocation)
             srcpath = startLocation;
         else
-            srcpath = appPaths.appPaths.purgatoryPath;
+            srcpath = appPaths.appPaths.dumpPath;
         
         const allPaths = getDirectoriesRecursive(srcpath);
         let fileList = [];

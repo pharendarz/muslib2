@@ -66,7 +66,7 @@ changeValueInKey = (oldMetadata, keyName, changeValue) => {
 
 exports.flacWrite = (filePath, oldMetadata, newComments) => {
   const musicLibraryPath = appPaths.appPaths.musicLibraryPath;
-  const purgatoryPath = appPaths.appPaths.purgatoryPath;
+  const dumpPath = appPaths.appPaths.dumpPath;
 
   const filename = path.basename(filePath);
   const extension = path.extname(filePath);
