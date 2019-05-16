@@ -77,7 +77,7 @@ module.exports = app => {
         await driveMgt.createFolderWithFiles(
             paths.dumpAlbumPath, paths.purgAlbumPath
         );
-        res.send({purgatoryPath: purgatoryPath});
+        res.send({purgatoryPath: 'lol'});
     });
 
     app.get('/api/albums/all', async (req, res) => {

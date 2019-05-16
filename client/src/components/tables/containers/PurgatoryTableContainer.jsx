@@ -9,7 +9,8 @@ export const PurgatoryTable = (props) => {
             <tr>
                 <th>#</th>
                 <th>Song path</th>
-                <th>Purgatory path</th>
+                <th>Dump path</th>
+                <th>Dump cleared</th>
                 <th>Album Folder</th>
                 <th>Album</th>
                 <th>Index Album</th>

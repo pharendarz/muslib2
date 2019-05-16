@@ -42,7 +42,7 @@ function findSpecificFileFormat(startPath, filter){
     }
     // console.log('pathsWithFilter', pathsWithFilter)
     if (pathsWithFilter.length === 0) 
-        return null;
+        return [];
     else
         return pathsWithFilter;
 }
@@ -73,14 +73,16 @@ exports.readDrive = (startLocation) => {
             if (filePath !== undefined){
                 let pathsArray = findSpecificFileFormat(filePath.toString(), '.flac');
                 // console.log('PATHSARRAY::::', pathsArray);
-                const parentDirName = path.dirname(pathsArray[0]).split(path.sep).pop();
-                console.log(parentDirName);
-                const obj = {
-                    filePaths: pathsArray,
-                    albumFolder: parentDirName,
+                if (pathsArray.length !== 0){
+                    const parentDirName = path.dirname(pathsArray[0]).split(path.sep).pop();
+                    console.log(parentDirName);
+                    const obj = {
+                        filePaths: pathsArray,
+                        albumFolder: parentDirName,
+                    }
+                    // console.log('FILE MGT_readDrive newObject', obj);
+                    if(pathsArray !== null) fileList.push(obj);
                 }
-                // console.log('FILE MGT_readDrive newObject', obj);
-                if(pathsArray !== null) fileList.push(obj);
             }
         });
         fileList = fileList.reduce((a, b) => a.concat(b), []);

@@ -9,17 +9,20 @@ const _handleReadDrive = async (props) => {
     const appPaths = await getAppPaths();
     const arrayOfPaths = await readDriveHDD(appPaths.dumpPath);
     // console.log('ARRAY OF PATHS::::', arrayOfPaths);
-    const modPaths = arrayOfPaths.map(path => {
-        return (path.filePaths.map(fileObj => {
-            
-            return {
-                filePath: fileObj,
-                albumFolder: path.albumFolder
-            }
-        }))
-    });
-    console.log('MOD PATHS::::', modPaths);
-    props.readDriveDump(modPaths);
+    if (arrayOfPaths) {
+
+        const modPaths = arrayOfPaths.map(path => {
+            return (path.filePaths.map(fileObj => {
+                
+                return {
+                    filePath: fileObj,
+                    albumFolder: path.albumFolder
+                }
+            }))
+        });
+        console.log('MOD PATHS::::', modPaths);
+        props.readDriveDump(modPaths);
+    }
 }
 
 const _handleCreateMongoByAlbum = async (props, property) => {

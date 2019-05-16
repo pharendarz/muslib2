@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {Button,} from 'react-bootstrap';
+import {Button, InputGroup} from 'react-bootstrap';
 //redux 
 import {connect} from 'react-redux';
 import {readSongFlacType, readSongsWithFlacType} from '../../../actions';
@@ -14,7 +14,7 @@ class SongTableBody extends React.Component {
     }
     render(){
         let filepath = '';
-        let purgatoryPath = '';
+        let dumpPath = '';
         let albumFolder = '';
 
         let indexAlbum = null;
@@ -54,7 +54,8 @@ class SongTableBody extends React.Component {
             <tr>
                 <td>{this.props.indexAlbum}</td>
                 <td>{filepath.substring(0,10)}...</td>
-                <td>{purgatoryPath.substring(0,10)}...</td>
+                <td>{dumpPath.substring(0,10)}...</td>
+                <td><InputGroup.Checkbox /></td>
                 <td>{albumFolder}</td>
                 <td>{album}</td>
                 <td>{indexAlbum}</td>
