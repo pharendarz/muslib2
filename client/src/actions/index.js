@@ -77,12 +77,19 @@ export const readSongsWithFlacType = (view, singlePath) => (dispatch, getState) 
 
 }
 
-export const readSongFlacType = (song, view) => (dispatch, getState) => {
+export const readSongFlacType = (song, view) => async (dispatch, getState) => {
     switch(view){
         case 'DUMP':
             dispatch({type: 'READ_FILE_FLAC_DUMP', payload: song})
             break;
         case 'PURGATORY':
+            console.log('ACTION PURG', song);
+            // read from csv _local file in album purgatory data
+            const localData = await _readFromPurgatoryCsvLocal(song.filePath);
+            // add data to payload
+            song.filePathDump = localData.dumpPath;
+            // console.log(localData);
+            // dispatch
             dispatch({type: 'READ_FILE_FLAC_PURGATORY', payload: song})
             break;
         case 'LIBRARY':
@@ -94,4 +101,22 @@ export const readSongFlacType = (song, view) => (dispatch, getState) => {
         default:
             break;
     }
+}
+
+const _readFromPurgatoryCsvLocal = (localFilePath) => {
+    return new Promise ((resolve, reject) => {
+        axios({
+            method: 'post', 
+            url: '/api/purgatory/read_album_csv_return_dump_path', 
+            timeout: 5000, 
+            data: {purgatoryPath: localFilePath}})
+        .then(response => response.data)
+        .catch(err => {
+            console.log('ERROR READ ALL SONGS FLAC', err.message);
+        })            
+        .then(result => {
+            // console.log(result);
+            resolve(result)
+        })
+    })
 }

@@ -14,11 +14,11 @@ class SongTableBody extends React.Component {
         super(props);
 
         this.handleReadFlac = this.handleReadFlac.bind(this);
-        this.handleWriteFlac = this.handleWriteFlac.bind(this);
+        // this.handleWriteFlac = this.handleWriteFlac.bind(this);
     }
-    handleWriteFlac = (filePath) => {
-        axios({method: 'post', url: '/writeflac', timeout: 5000, data: {filePath: filePath}});
-    }
+    // handleWriteFlac = (filePath) => {
+    //     axios({method: 'post', url: '/writeflac', timeout: 5000, data: {filePath: filePath}});
+    // }
     handleReadFlac = async (filePath) => {
         this.props.readSongsWithFlacType('DUMP', filePath);
     }
@@ -32,7 +32,7 @@ class SongTableBody extends React.Component {
         //move all files with defined circumstances to purgatory folder
         // console.log('dumpAlbumPath', dumpAlbumPath);
         // console.log('purgAlbumPath', purgAlbumPath);
-        axios({method: 'post', url: '/api/purgatory/create', timeout: 5000, data: {
+        axios({method: 'post', url: '/api/purgatory/create_mirror', timeout: 5000, data: {
             dumpAlbumPath: dumpAlbumPath,
             purgAlbumPath: purgAlbumPath
         }});
@@ -78,8 +78,10 @@ class SongTableBody extends React.Component {
             <tbody>
             <tr>
                 <td>{this.props.indexAlbum}</td>
-                <td>{filepath.substring(0,10)}...</td>
-                <td>{purgatoryPath.substring(0,10)}...</td>
+                {/* <td>{filepath.substring(0,10)}...</td>
+                <td>{purgatoryPath.substring(0,10)}...</td> */}
+                <td>{filepath}</td>
+                <td>{purgatoryPath}</td>
                 <td>{albumFolder}</td>
                 <td>{album}</td>
                 <td>{indexAlbum}</td>
@@ -89,7 +91,7 @@ class SongTableBody extends React.Component {
                 <td>{rating}</td>
                 <td><Button onClick={() => this.handleProceedAlbum(this.props.song.filePath, albumFolder)} style={{background: 'lightgreen', border: '1px solid #000'}}>Proceed</Button></td>
                 <td><Button onClick={() => this.handleReadFlac(this.props.song.filePath)}>Read Flac</Button></td>
-                <td><Button onClick={() => this.handleWriteFlac(this.props.song.filePath)} style={{background: 'tomato', border: '1px solid #000'}}>Write Tags</Button></td>
+                {/* <td><Button onClick={() => this.handleWriteFlac(this.props.song.filePath)} style={{background: 'tomato', border: '1px solid #000'}}>Write Tags</Button></td> */}
                 <td>fileloc</td>
             </tr>
             </tbody>

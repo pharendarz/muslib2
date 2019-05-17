@@ -19,7 +19,7 @@ export const DumpTable = (props) => {
                 <th>rating</th>
                 <th>Library</th>
                 <th>read flac</th>
-                <th>write tags</th>
+                {/* <th>write tags</th> */}
                 <th>open file loc</th>
             </tr>
         </thead>

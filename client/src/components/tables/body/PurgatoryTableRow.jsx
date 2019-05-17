@@ -8,9 +8,28 @@ import {readSongFlacType, readSongsWithFlacType} from '../../../actions';
 import {testUndefined} from '../../../commonFunctions/helpers';
 // app setup
 import {getAppPaths} from '../../../commonFunctions/application';
+
 class SongTableBody extends React.Component {
+    handleWriteFlac = (filePath) => {
+        axios({method: 'post', url: '/writeflac', timeout: 5000, data: {filePath: filePath}});
+    }
     handleReadFlac = async (filePath) => {
         this.props.readSongsWithFlacType('PURGATORY', filePath);
+    }
+    handleUpdateCSV = (purgatoryPath) => {
+        let csvDataObj = {
+            jabba_id: '555',
+            file_path: purgatoryPath,
+            file_cleared: false
+        }
+        axios({method: 'post', url: '/api/purgatory/write_album_csv', timeout: 5000, data: {
+            csvDataObj: csvDataObj,            
+        }});
+    }
+    handleReadCSV = (purgatoryPath) => {
+        axios({method: 'post', url: '/api/purgatory/read_album_csv', timeout: 5000, data: {
+            purgatoryPath: purgatoryPath,            
+        }});
     }
     render(){
         let filepath = '';
@@ -32,6 +51,8 @@ class SongTableBody extends React.Component {
             const fileObject = this.props.filePathsState[this.props.indexAlbum][this.props.indexFile];
             // console.log('RENDER OBJECT:::' ,fileObject);
             filepath = fileObject.filePath;
+            if(testUndefined(fileObject.filePathDump, 'filePathDump'))
+                dumpPath = fileObject.filePathDump;
             if(testUndefined(fileObject.indexAlbum, 'indexAlbum'))
                 indexAlbum = fileObject.indexAlbum;
                 
@@ -53,8 +74,10 @@ class SongTableBody extends React.Component {
             <tbody>
             <tr>
                 <td>{this.props.indexAlbum}</td>
-                <td>{filepath.substring(0,10)}...</td>
-                <td>{dumpPath.substring(0,10)}...</td>
+                <td>{filepath.substring(0,35)}...</td>
+                <td>{dumpPath.substring(0,35)}...</td>
+                {/* <td>{filepath}</td>
+                <td>{dumpPath}</td> */}
                 <td><InputGroup.Checkbox /></td>
                 <td>{albumFolder}</td>
                 <td>{album}</td>
@@ -63,6 +86,8 @@ class SongTableBody extends React.Component {
                 <td>{artist}</td>
                 <td>{title}</td>
                 <td>{rating}</td>
+                <td><Button onClick={() => this.handleReadCSV(this.props.song.filePath)} style={{background: 'orange', border: '1px solid #000'}}>read csv</Button></td>
+                <td><Button onClick={() => this.handleUpdateCSV(this.props.song.filePath)} style={{background: 'lightblue', border: '1px solid #000'}}>update csv</Button></td>
                 <td><Button onClick={() => this.handleWriteFlac(this.props.song.filePath)} style={{background: 'tomato', border: '1px solid #000'}}>Write Tags</Button></td>
                 <td>fileloc</td>
             </tr>
@@ -71,14 +96,13 @@ class SongTableBody extends React.Component {
     }
 }
 
-//<<REDUX
-const mapStateToProps = (state) => { // << GET MY STATE
+
+const mapStateToProps = (state) => { 
     return {
         filePathsState: state.filePathsPurgatory,
-    }; // MUSI ZWRACAC OBIEKT
+    }; 
 }
 
 export default connect(mapStateToProps, 
-    {readSongFlacType, readSongsWithFlacType} // << drugi argument zawiera ACTION CREATORY ES6 << {readSongFlacType: readSongFlacType} = {readSongFlacType}
+    {readSongFlacType, readSongsWithFlacType}
 )(SongTableBody);
-//>>

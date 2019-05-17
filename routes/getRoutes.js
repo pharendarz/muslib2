@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
+const path = require('path');
 //app
 const flacMgt = require('../flac_management/flacMgt.js');
 const driveMgt = require('../drive_management/driveMgt');
 const flacRead = require('../flac_management/flacRead.js');
 const flacWrite = require('../flac_management/flacWrite.js');
 const appPaths = require('../general_setup/appPaths');
-
+const csvMgt = require('../drive_management/csvMgt');
 //db
 const albums = require('../mongoModels/Albums');
 const globalSetup = require('../mongoModels/GlobalSetup');
@@ -71,14 +72,33 @@ module.exports = app => {
         // })
     });
     //purgatory 
-    app.post('/api/purgatory/create', async (req, res) => {
+    app.post('/api/purgatory/create_mirror', async (req, res) => {
         const paths = req.body;      
         console.log('req.body.data:::', req.body);
-        await driveMgt.createFolderWithFiles(
+        await driveMgt.createFolderMirrorFiles(
             paths.dumpAlbumPath, paths.purgAlbumPath
         );
         res.send({purgatoryPath: 'lol'});
     });
+    //purgatory > write to csv
+    app.post('/api/purgatory/write_album_csv', async (req, res) => {
+        const data = req.body;    
+        const purgatoryAlbumPath = path.dirname(data.csvDataObj.file_path);
+        console.log('req.body.data:::', data.csvDataObj, purgatoryAlbumPath);
+        csvMgt.writeToCsv('purgatory', purgatoryAlbumPath, data.csvDataObj);
+        res.send({csvWrite: 'lol'});
+    });
+
+    //purgatory > read from csv
+    app.post('/api/purgatory/read_album_csv_return_dump_path', async (req, res) => {
+        const purgatoryPath = req.body.purgatoryPath;    
+        const purgatoryAlbumPath = path.dirname(purgatoryPath);
+        console.log('req.body.data:::', purgatoryAlbumPath);
+        const dumpPath = await csvMgt.readFromLocalAlbumCsv_returnDumpPath(purgatoryAlbumPath, purgatoryPath);
+        res.send({dumpPath: dumpPath});
+    });
+    //
+
 
     app.get('/api/albums/all', async (req, res) => {
         const Albums = await mongoose
