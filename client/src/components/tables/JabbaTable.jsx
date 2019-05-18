@@ -11,7 +11,7 @@ import {
 } from '../../actions';
 //app client
 import DumpButtons from '../buttons/DumpButtonsSet';
-import PurgatoryButtons from '../buttons/PurgatoryButtons';
+import PurgatoryButtons from '../buttons/PurgatoryButtonSet';
 import LibraryButtons from '../buttons/LibraryButtonSet';
 import AlbumsButtons from '../buttons/AlbumsButtonSet';
 import {DumpTable} from './containers/DumpTableContainer';

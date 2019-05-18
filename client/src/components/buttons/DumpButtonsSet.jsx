@@ -48,20 +48,20 @@ const _handleCreateMongoByAlbum = async (props, property) => {
 const DumpButtons = (props) => {
     return (
         <div>
-            <Button 
+            {/* <Button 
                 key="dumpButton_1"
                 style={{background: 'red', border: '1px solid #000'}} 
                 onClick={()=>{props.readSongsWithFlacType('DUMP')}}
             >
                 Read all FLAC's
-            </Button>
-            <Button 
+            </Button> */}
+            {/* <Button 
                 key="dumpButton_2"
                 variant="dark" 
                 onClick={() => {}}
             >
                 Add AlbumId
-            </Button>
+            </Button> */}
             <Button 
                 key="dumpButton_3"
                 style={{background: 'green', border: '1px solid #000'}} 

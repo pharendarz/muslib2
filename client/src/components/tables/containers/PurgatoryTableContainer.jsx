@@ -18,6 +18,7 @@ export const PurgatoryTable = (props) => {
                 <th>Artist</th>
                 <th>Title</th>
                 <th>rating</th>
+                <th>read flac</th>
                 <th>read csv</th>
                 <th>update csv</th>
                 <th>write tags</th>

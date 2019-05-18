@@ -17,10 +17,20 @@ module.exports = app => {
         // console.log('metadata:', metadata);
         res.send({metadata: metadata});
     });
+
+
+
+
     app.post('/writeflac', async (req, res) => {
-        const metadata = await flacRead.flacRead(req.body.filePath);
-        flacWrite.flacWrite(req.body.filePath, metadata, req.body.newTags);
+        const metadata = await flacRead.flacRead(req.body.filePathDump);
+        const songStoreData = req.body;
+        console.log(songStoreData);
+        flacWrite.flacWrite(songStoreData, metadata, req.body.newTags);
     });
+
+
+
+
     app.post('/readdrive', async (req, res) => {
         console.log('before read');
         console.log(req.body.startLocation);
@@ -80,20 +90,31 @@ module.exports = app => {
         );
         res.send({purgatoryPath: 'lol'});
     });
+
+
+
     //purgatory > write to csv
     app.post('/api/purgatory/write_album_csv', async (req, res) => {
         const data = req.body;    
-        const purgatoryAlbumPath = path.dirname(data.csvDataObj.file_path);
-        console.log('req.body.data:::', data.csvDataObj, purgatoryAlbumPath);
-        csvMgt.writeToCsv('purgatory', purgatoryAlbumPath, data.csvDataObj);
+        const purgatoryAlbumPath = path.dirname(data.csvDataObj.FilePathPurgatory);
+        // console.log('req.body.data:::', data.csvDataObj, purgatoryAlbumPath);
+        csvMgt.writeToCsv('purgatory', purgatoryAlbumPath, data.csvDataObj, data.indexKey);
         res.send({csvWrite: 'lol'});
+    });
+
+    app.post('/api/purgatory/write_album_csv_change', async (req, res) => {
+        const data = req.body;    
+        const purgatoryAlbumPath = path.dirname(data.csvDataObj.FilePathPurgatory);
+        // console.log('req.body.data:::', data.csvDataObj, purgatoryAlbumPath);
+        const newCsvRows = await csvMgt.writeToCsvChangeRecord('purgatory', purgatoryAlbumPath, data.csvDataObj, data.indexKey, data.FilePathPurgatory);
+        res.send({newCsvRows: newCsvRows});
     });
 
     //purgatory > read from csv
     app.post('/api/purgatory/read_album_csv_return_dump_path', async (req, res) => {
         const purgatoryPath = req.body.purgatoryPath;    
         const purgatoryAlbumPath = path.dirname(purgatoryPath);
-        console.log('req.body.data:::', purgatoryAlbumPath);
+        // console.log('req.body.data:::', purgatoryAlbumPath);
         const dumpPath = await csvMgt.readFromLocalAlbumCsv_returnDumpPath(purgatoryAlbumPath, purgatoryPath);
         res.send({dumpPath: dumpPath});
     });

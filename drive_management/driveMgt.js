@@ -30,10 +30,10 @@ exports.createFolderMirrorFiles = async (dumpAlbumPath, purgatoryAlbumPath) => {
                             await fs.copyFile(filename, destinationFile).then(async () =>{
                                 // console.log(`${filename} moved!`)
                                 let csvDataObj = {
-                                    jabba_id: '654',
-                                    file_path_dump: dumpAlbumPath,
-                                    file_path_purgatory: destinationFile,
-                                    file_cleared: false
+                                    JabbaID: '654',
+                                    FilePathDump: filename,
+                                    FilePathPurgatory: destinationFile,
+                                    FileClearedDump: false
                                 }
                                 await csvMgt.writeToCsv('purgatory', purgatoryAlbumPath, csvDataObj);
                             }).catch(err => {

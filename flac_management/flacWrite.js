@@ -1,9 +1,11 @@
+// dependencies
 const path = require('path');
-
 var fs = require("fs");
 var flac = require("flac-metadata");
-
+// app
 const appPaths = require('../general_setup/appPaths');
+const csvMgt = require('../drive_management/csvMgt');
+
 
 const desiredMetadataElements = {
   Album: "album=",
@@ -20,7 +22,7 @@ const desiredMetadataElements = {
 }
 
 
-createArrayOfTags = (metadata ) => {
+const _createArrayOfTags = (metadata ) => {
   const flattenedObject = {};
   
   metadata.forEach((obj, i) => {
@@ -45,7 +47,7 @@ createArrayOfTags = (metadata ) => {
   return arrayOfTags;
     //flattenedArray.hasOwnProperty
 }
-changeValueInKey = (oldMetadata, keyName, changeValue) => {
+const _changeValueInKey = (oldMetadata, keyName, changeValue) => {
 
   let keyIndex = null;
 
@@ -64,39 +66,38 @@ changeValueInKey = (oldMetadata, keyName, changeValue) => {
   return oldMetadata;
 }
 
-exports.flacWrite = (filePath, oldMetadata, newComments) => {
-  const musicLibraryPath = appPaths.appPaths.musicLibraryPath;
-  const dumpPath = appPaths.appPaths.dumpPath;
-
-  const filename = path.basename(filePath);
-  const extension = path.extname(filePath);
-  const file = path.basename(filename, extension);
-  console.log('FILE:', '//', filename, '//', extension, '//', file);
-
-  const filenameTarget = `${musicLibraryPath}${filename}`;
-
-  var reader = fs.createReadStream(filePath);
-  var writer = fs.createWriteStream(filenameTarget);
+exports.flacWrite = (songStoreData, oldMetadata, newComments) => {
+  // read stream from dump
+  var reader = fs.createReadStream(songStoreData.filePathDump);
+  // write file with new tags in purgatory
+  var writer = fs.createWriteStream(songStoreData.filePathPurgatory);
   var processor = new flac.Processor();
 
   var vendor = "JabbaLibrary 1.0";
-
-  // var comments = [
-  //   "ARTIST=Przemy",
-  //   "TITLE=Przemix",
-  //   "ALBUM=P is for Przemy",
-  //   "TRACKNUMBER=A1",
-  //   "DATE=1993",
-  //   "DISCOGS=22379",
-  //   "MUSLIB=11111",
-  //   "RATING=PRZEMY_3"
-  // ];
-  console.log(`BEFORE`);
+  // TESTING ONE TAG
+  console.log(`\u001b[1;35m Old Metadata`);
   console.log(oldMetadata);
-  let newMetadata = changeValueInKey(oldMetadata, 'Rating', 'JL_' + 3);
-  newMetadata = (createArrayOfTags(oldMetadata));
-  console.log(`AFTER`);
+
+  // [TODO] write metadata to purgatory album _local.csv file
+  let newMetadata = _changeValueInKey(oldMetadata, 'Rating', 'JL_4');
+  newMetadata = (_createArrayOfTags(oldMetadata));
+
+  console.log(`\u001b[1;34m New Metadata`);
   console.log(newMetadata);
+
+  let csvDataObj = {
+    JabbaID: 'not_necessary',
+    FileClearedDump: true,
+    Rating: 'JL_4',
+  }
+
+  csvMgt.writeToCsvChangeRecord(
+    'purgatory', 
+    path.dirname(songStoreData.filePathPurgatory), 
+    csvDataObj, 
+    'FilePathPurgatory',
+    songStoreData.filePathPurgatory
+  );
 
   processor.on("preprocess", function(mdb) {
     // Remove existing VORBIS_COMMENT block, if any.
@@ -111,6 +112,7 @@ exports.flacWrite = (filePath, oldMetadata, newComments) => {
   });
 
   reader.pipe(processor).pipe(writer);
+
   console.log('write completed')
 
 }

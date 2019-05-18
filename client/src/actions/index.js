@@ -83,12 +83,16 @@ export const readSongFlacType = (song, view) => async (dispatch, getState) => {
             dispatch({type: 'READ_FILE_FLAC_DUMP', payload: song})
             break;
         case 'PURGATORY':
-            console.log('ACTION PURG', song);
+            // console.log('ACTION PURG SONG ::: ', song);
+
             // read from csv _local file in album purgatory data
-            const localData = await _readFromPurgatoryCsvLocal(song.filePath);
+            const localData = await _readFromPurgatoryCsvLocal_ForDumpPath(song.filePath);
             // add data to payload
             song.filePathDump = localData.dumpPath;
-            // console.log(localData);
+
+            // add read data to album _local.csv file
+            await _changeRecordInCsvLocal(song);
+
             // dispatch
             dispatch({type: 'READ_FILE_FLAC_PURGATORY', payload: song})
             break;
@@ -102,8 +106,40 @@ export const readSongFlacType = (song, view) => async (dispatch, getState) => {
             break;
     }
 }
-
-const _readFromPurgatoryCsvLocal = (localFilePath) => {
+const _changeRecordInCsvLocal = (song) => {
+    console.log(song.filePath);
+    return new Promise ((resolve, reject) => {
+        // search csv by index key
+        const indexKey = 'FilePathPurgatory';
+        // update package
+        let csvDataObj = {
+            JabbaID: 'not_necessary',
+            FilePathPurgatory: song.filePath,
+            FileClearedDump: false,
+            Rating: song.Rating,
+            SongTitle: song.title,
+            AlbumName: song.album
+        }
+        axios({
+            method: 'post', 
+            url: '/api/purgatory/write_album_csv_change', 
+            timeout: 5000, 
+            data: {
+                csvDataObj: csvDataObj,           
+                indexKey: indexKey
+            }
+        })
+        .then(response => response.data)
+        .catch(err => {
+            console.log('ERROR write_album_csv_change:::', err.message);
+        })            
+        .then(result => {
+            // console.log('write_album_csv_change', result);
+            resolve(result)
+        });
+    })
+}
+const _readFromPurgatoryCsvLocal_ForDumpPath = (localFilePath) => {
     return new Promise ((resolve, reject) => {
         axios({
             method: 'post', 
@@ -112,10 +148,9 @@ const _readFromPurgatoryCsvLocal = (localFilePath) => {
             data: {purgatoryPath: localFilePath}})
         .then(response => response.data)
         .catch(err => {
-            console.log('ERROR READ ALL SONGS FLAC', err.message);
+            console.log('ERROR read_album_csv_return_dump_path:::', err.message);
         })            
         .then(result => {
-            // console.log(result);
             resolve(result)
         })
     })

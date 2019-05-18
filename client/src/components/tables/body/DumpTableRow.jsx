@@ -89,7 +89,7 @@ class SongTableBody extends React.Component {
                 <td>{artist}</td>
                 <td>{title}</td>
                 <td>{rating}</td>
-                <td><Button onClick={() => this.handleProceedAlbum(this.props.song.filePath, albumFolder)} style={{background: 'lightgreen', border: '1px solid #000'}}>Proceed</Button></td>
+                <td><Button onClick={() => this.handleProceedAlbum(this.props.song.filePath, albumFolder)} style={{background: 'lightgreen', border: '1px solid #000'}}>Purgatory</Button></td>
                 <td><Button onClick={() => this.handleReadFlac(this.props.song.filePath)}>Read Flac</Button></td>
                 {/* <td><Button onClick={() => this.handleWriteFlac(this.props.song.filePath)} style={{background: 'tomato', border: '1px solid #000'}}>Write Tags</Button></td> */}
                 <td>fileloc</td>

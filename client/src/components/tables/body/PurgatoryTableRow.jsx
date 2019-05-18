@@ -10,17 +10,23 @@ import {testUndefined} from '../../../commonFunctions/helpers';
 import {getAppPaths} from '../../../commonFunctions/application';
 
 class SongTableBody extends React.Component {
-    handleWriteFlac = (filePath) => {
-        axios({method: 'post', url: '/writeflac', timeout: 5000, data: {filePath: filePath}});
+
+    handleWriteFlac = (song) => {
+        console.log(song);
+        axios({method: 'post', url: '/writeflac', timeout: 5000, data: {
+            filePathPurgatory: song.filePath,
+            filePathDump: song.filePathDump,
+        }});
     }
+
     handleReadFlac = async (filePath) => {
         this.props.readSongsWithFlacType('PURGATORY', filePath);
     }
     handleUpdateCSV = (purgatoryPath) => {
         let csvDataObj = {
-            jabba_id: '555',
+            JabbaID: '555',
             file_path: purgatoryPath,
-            file_cleared: false
+            FileClearedDump: false
         }
         axios({method: 'post', url: '/api/purgatory/write_album_csv', timeout: 5000, data: {
             csvDataObj: csvDataObj,            
@@ -86,9 +92,10 @@ class SongTableBody extends React.Component {
                 <td>{artist}</td>
                 <td>{title}</td>
                 <td>{rating}</td>
+                <td><Button onClick={() => this.handleReadFlac(this.props.song.filePath)} style={{background: 'grey', border: '1px solid #000'}}>Read Flac</Button></td>
                 <td><Button onClick={() => this.handleReadCSV(this.props.song.filePath)} style={{background: 'orange', border: '1px solid #000'}}>read csv</Button></td>
                 <td><Button onClick={() => this.handleUpdateCSV(this.props.song.filePath)} style={{background: 'lightblue', border: '1px solid #000'}}>update csv</Button></td>
-                <td><Button onClick={() => this.handleWriteFlac(this.props.song.filePath)} style={{background: 'tomato', border: '1px solid #000'}}>Write Tags</Button></td>
+                <td><Button onClick={() => this.handleWriteFlac(this.props.song)} style={{background: 'tomato', border: '1px solid #000'}}>Write Tags</Button></td>
                 <td>fileloc</td>
             </tr>
             </tbody>
